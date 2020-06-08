@@ -1,8 +1,12 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { Link, Route, Switch } from 'react-router-dom';
+import AddToCart from './AddToCart';
+import Checkout from './Checkout';
 
 function App() {
+
   return (
     <div className="App">
       <header className="App-header">
@@ -18,6 +22,13 @@ function App() {
         >
           Learn React
         </a>
+        <Switch>
+          <Route path="/addToCart" component={AddToCart}/>
+          <Route path="/checkout" component={Checkout}/>
+        </Switch>
+        <Link to="/">Home</Link>
+        <Link to="/addToCart">Add to Cart</Link>
+        <Link to="/checkout">Checkout</Link>
       </header>
     </div>
   );
