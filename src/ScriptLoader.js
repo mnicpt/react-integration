@@ -13,6 +13,7 @@ function loadScript(WrappedComponent) {
       const load = function(src, cb) {
         var script = document.createElement('script');
         script.src = src;
+        script.defer = true;
         Object.keys(attrs).forEach(attr => {
           script.setAttribute(attr, attrs[attr]);
         });
