@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import loadScript from './ScriptLoader';
 
-function PayPalButtons (props) {
+export default function PayPalButtons (props) {
   let Button = window.paypal.Buttons.driver('react', { React, ReactDOM });
   Object.keys(props).forEach(prop => {
     window.paypal.Buttons[prop] = props[prop];
@@ -13,4 +13,4 @@ function PayPalButtons (props) {
   );
 };
 
-export default loadScript(PayPalButtons);
+// export default loadScript(PayPalButtons);

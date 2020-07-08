@@ -1,5 +1,6 @@
 import React from 'react';
 import PayPalButtons from './PayPalButtons';
+import './App.css';
 
 function Checkout() {
   const params = {
@@ -30,13 +31,15 @@ function Checkout() {
   return (
       <>
         <h1>Checkout</h1>
-        <PayPalButtons
-          clientId='sb'
-          params={params}
-          attrs={attributes}
-          createOrder={(data, actions) =>  createOrder(data, actions)}
-          onApprove={(data, actions) => onApprove(data, actions)}
-        />
+        <div className='paypal-buttons'>
+          <PayPalButtons
+            clientId='sb'
+            params={params}
+            attrs={attributes}
+            createOrder={(data, actions) =>  createOrder(data, actions)}
+            onApprove={(data, actions) => onApprove(data, actions)}
+          />
+        </div>
       </>
   );
 }
