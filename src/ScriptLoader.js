@@ -3,7 +3,8 @@ function load(options) {
 
   let paramString = '';
   Object.keys(options).forEach(option => {
-    if (option.indexOf('data-') !== 0) {
+    console.log(option);
+    if (option.indexOf('data-') !== 0 && option !== 'client-id') {
       paramString += `&${option}=${options[option]}`;
     }
   });
