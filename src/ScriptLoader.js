@@ -1,36 +1,47 @@
-function load(options) {
-  let isLoaded = false;
+import React, { useState, useEffect } from 'react';
 
-  let paramString = '';
-  Object.keys(options).forEach(option => {
-    console.log(option);
-    if (option.indexOf('data-') !== 0 && option !== 'client-id') {
-      paramString += `&${option}=${options[option]}`;
-    }
-  });
+function loadScript(WrappedComponent) {
+  function ScriptLoader({ url, ...props }) {
+    const [isLoaded, setLoaded] = useState(false);
 
-  const load = function(src, cb) {
-    var script = document.createElement('script');
-    script.src = src;
-    script.defer = true;
-    Object.keys(options).forEach(option => {
-      if (option.indexOf('data-') === 0) {
-        script.setAttribute(option, options[option]);
+    useEffect(() => {
+      let paramString = '';
+      Object.keys(props).forEach(prop => {
+        if(prop.indexOf('data-') !== 0) {
+          paramString += `&${prop}=${props[prop]}`;
+        }
+      });
+
+      const load = function(src, cb) {
+        var script = document.createElement('script');
+        script.src = src;
+        script.defer = true;
+        
+        Object.keys(props).forEach(prop => {
+          if(prop.indexOf('data-') === 0) {
+            script.setAttribute(prop, props[prop]);
+          }
+        });
+
+        script.onload = cb;
+        document.head.appendChild(script);
       }
-    });
+      if (window.paypal) {
+        setLoaded(true);
+      } else {
+        load(`${url}?${paramString}`, () => {
+          setLoaded(true)
+        });
+      }
+    }, [url, props]);
 
-    script.onload = cb;
-    document.head.appendChild(script);
+    if (!isLoaded) return null;
+    return (
+      <WrappedComponent {...props} />
+    );
   }
 
-  const clientId = options['client-id'] || 'sb';
-  load(`https://www.paypal.com/sdk/js?client-id=${clientId}${paramString}`, () => {
-    isLoaded = true;
-  });
-
-  if (!isLoaded) return null;
+  return ScriptLoader;
 }
 
-export default {
-  load
-};
+export default loadScript;

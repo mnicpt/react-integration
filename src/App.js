@@ -4,18 +4,17 @@ import './App.css';
 import { Link, Route, Switch } from 'react-router-dom';
 import AddToCart from './AddToCart';
 import Checkout from './Checkout';
-import PayPalScript from './ScriptLoader';
+import PayPalScript from './PayPalScript';
 
 function App() {
-  PayPalScript.load({
-    'client-id': 'sb',
-    'currency': 'CAD',
-    'commit': true,
-    'data-csp-nonce': 'yo'
-  });
-
   return (
     <div className="App">
+      <PayPalScript
+        client-id = 'sb'
+        currency = 'CAD'
+        commit = {true}
+        data-csp-nonce = 'yo'
+      />
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
