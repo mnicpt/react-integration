@@ -1,38 +1,35 @@
-import React, { useState, useEffect } from 'react';
+function load(options) {
+  let isLoaded = false;
 
-function loadScript(WrappedComponent) {
-  function ScriptLoader({ clientId = 'sb', params = {}, attrs = {}, ...props }) {
-    const [isLoaded, setLoaded] = useState(false);
+  let paramString = '';
+  Object.keys(options).forEach(option => {
+    if (option.indexOf('data-') !== 0) {
+      paramString += `&${option}=${options[option]}`;
+    }
+  });
 
-    useEffect(() => {
-      let paramString = '';
-      Object.keys(params).forEach(param => {
-        paramString += `&${param}=${params[param]}`;
-      });
-
-      const load = function(src, cb) {
-        var script = document.createElement('script');
-        script.src = src;
-        script.defer = true;
-        Object.keys(attrs).forEach(attr => {
-          script.setAttribute(attr, attrs[attr]);
-        });
-
-        script.onload = cb;
-        document.head.appendChild(script);
+  const load = function(src, cb) {
+    var script = document.createElement('script');
+    script.src = src;
+    script.defer = true;
+    Object.keys(options).forEach(option => {
+      if (option.indexOf('data-') === 0) {
+        script.setAttribute(option, options[option]);
       }
-      load(`https://www.paypal.com/sdk/js?client-id=${clientId}${paramString}`, () => {
-        setLoaded(true)
-      });
-    }, [clientId, params, attrs]);
+    });
 
-    if (!isLoaded) return null;
-    return (
-      <WrappedComponent {...props} />
-    );
+    script.onload = cb;
+    document.head.appendChild(script);
   }
 
-  return ScriptLoader;
+  const clientId = options['client-id'] || 'sb';
+  load(`https://www.paypal.com/sdk/js?client-id=${clientId}${paramString}`, () => {
+    isLoaded = true;
+  });
+
+  if (!isLoaded) return null;
 }
 
-export default loadScript;
+export default {
+  load
+};

@@ -4,25 +4,18 @@ import './App.css';
 import { Link, Route, Switch } from 'react-router-dom';
 import AddToCart from './AddToCart';
 import Checkout from './Checkout';
-import PayPalScript from './PayPalScript';
+import PayPalScript from './ScriptLoader';
 
 function App() {
-  const params = {
-    currency: 'CAD',
-    commit: true
-  };
-
-  const attributes = {
+  PayPalScript.load({
+    'client-id': 'sb',
+    'currency': 'CAD',
+    'commit': true,
     'data-csp-nonce': 'yo'
-  };
+  });
 
   return (
     <div className="App">
-      <PayPalScript
-        clientId='sb'
-        params={params}
-        attrs={attributes}
-      />
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
