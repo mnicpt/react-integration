@@ -1,20 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { Link, Route, Switch } from 'react-router-dom';
 import AddToCart from './AddToCart';
 import Checkout from './Checkout';
-import PayPalScript from './PayPalScript';
+// import PayPalScript from './PayPalScript';
+import { paypalScript } from './paypal';
 
 function App() {
+  useEffect(() => {
+    paypalScript(
+      {
+      'client-id': 'sb',
+      'currency': 'USD',
+      'commit': true,
+      },
+      {
+        'data-csp-nonce': 'yo'
+      }
+    );
+  });
+
   return (
     <div className="App">
-      <PayPalScript
-        client-id = 'sb'
-        currency = 'CAD'
-        commit = {true}
-        data-csp-nonce = 'yo'
-      />
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
