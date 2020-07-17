@@ -4,23 +4,29 @@ import './App.css';
 import { paypalScript } from './paypal';
 
 function Checkout() {
-  const [isLoaded, setLoaded] = useState(window.paypal);
+  // const [isLoaded, setLoaded] = useState(window.paypal);
   
-  useEffect(() => {
-    paypalScript(
-      {
-      'client-id': 'sb',
-      'currency': 'USD',
-      'commit': true,
-      },
-      {
-        'data-csp-nonce': 'yo'
-      }
-    )
-    .then(() => {
-      setLoaded(true);
-    });
-  });
+  // useEffect(() => {
+  //   paypalScript(
+  //     {
+  //     'client-id': 'sb',
+  //     'currency': 'USD',
+  //     'commit': true,
+  //     },
+  //     {
+  //       'data-csp-nonce': 'yo'
+  //     }
+  //   )
+  //   .then(() => {
+  //     console.log('Loaded');
+  //     setLoaded(true);
+  //   })
+  //   .catch(err => {
+  //     console.error(`Error found: ${JSON.stringify(err)}`);
+  //   });
+  // }, []);
+
+  // if (!isLoaded) return null;
 
   const createOrder = (data, actions) => {
     return actions.order.create({
@@ -38,8 +44,6 @@ function Checkout() {
     return actions.order.capture();
   };
 
-  if (!isLoaded) return null;
-  
   return (
       <>
         <h1>Checkout</h1>

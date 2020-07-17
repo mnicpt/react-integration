@@ -4,7 +4,6 @@ import './App.css';
 import { Link, Route, Switch } from 'react-router-dom';
 import AddToCart from './AddToCart';
 import Checkout from './Checkout';
-// import PayPalScript from './PayPalScript';
 import { paypalScript } from './paypal';
 
 function App() {
@@ -18,7 +17,14 @@ function App() {
       {
         'data-csp-nonce': 'yo'
       }
-    );
+    )
+    .then(() => {
+      // do stuff after load
+      console.log('Loaded');
+    })
+    .catch(err => {
+      // handle error
+    });
   });
 
   return (
