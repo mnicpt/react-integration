@@ -1,4 +1,4 @@
-export const paypalScript = function(params, attributes, cb) {
+export const paypalScript = function({ params, attributes }, cb) {
   return new Promise((resolve, reject) => {
     let query = '';
     Object.keys(params).forEach(param => {
@@ -14,7 +14,9 @@ export const paypalScript = function(params, attributes, cb) {
       script.setAttribute(attr, attributes[attr]);
     });
   
-    script.onload = resolve;
+    script.onload = () => {
+      resolve(window.paypal);
+    };
     script.onerror = reject;
     document.head.appendChild(script);
   });

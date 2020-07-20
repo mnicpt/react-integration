@@ -7,25 +7,29 @@ import Checkout from './Checkout';
 import { paypalScript } from './paypal';
 
 function App() {
-  useEffect(() => {
-    paypalScript(
-      {
+  const paypalConfig = {
+    params: {
       'client-id': 'sb',
       'currency': 'USD',
       'commit': true,
-      },
-      {
-        'data-csp-nonce': 'yo'
-      }
-    )
-    .then(() => {
-      // do stuff after load
-      console.log('Loaded');
-    })
-    .catch(err => {
-      // handle error
-    });
-  });
+    },
+    attributes: {
+      'data-csp-nonce': 'yo'
+    }
+  };
+
+  // useEffect(() => {
+  //   paypalScript(
+  //     paypalConfig
+  //   )
+  //   .then(paypal => {
+  //     // do stuff after load
+  //     console.log('Loaded', paypal);
+  //   })
+  //   .catch(err => {
+  //     // handle error
+  //   });
+  // });
 
   return (
     <div className="App">

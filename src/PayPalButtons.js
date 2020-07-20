@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 
-function PayPalButtons () {
+function PayPalButtons (props) {
   const [paypalIsLoaded, setPaypalIsLoaded] = useState(window.paypal);
 
   let animationFrame = window.requestAnimationFrame(function loadScript() {
@@ -17,7 +17,7 @@ function PayPalButtons () {
 
   const PayPalButtonsComponent = window.paypal.Buttons.driver('react', { React, ReactDOM });
   return (
-    <PayPalButtonsComponent />
+    <PayPalButtonsComponent {...props} />
   );
 };
 
