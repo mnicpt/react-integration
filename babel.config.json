@@ -1,0 +1,4 @@
+{
+    "extends": "grumbler-scripts/config/.babelrc-browser",
+    "presets": ["@babel/preset-flow"]
+}
