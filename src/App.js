@@ -4,7 +4,7 @@ import './App.css';
 import { Link, Route, Switch } from 'react-router-dom';
 import AddToCart from './AddToCart';
 import Checkout from './Checkout';
-import { paypalScript } from './paypal';
+import { loadPaypalScript } from './paypal';
 
 function App() {
   const paypalConfig = {
@@ -18,18 +18,18 @@ function App() {
     }
   };
 
-  // useEffect(() => {
-  //   paypalScript(
-  //     paypalConfig
-  //   )
-  //   .then(paypal => {
-  //     // do stuff after load
-  //     console.log('Loaded', paypal);
-  //   })
-  //   .catch(err => {
-  //     // handle error
-  //   });
-  // });
+  useEffect(() => {
+    loadPaypalScript(
+      paypalConfig
+    )
+    .then(paypal => {
+      // do stuff after load
+      console.log('Loaded', paypal);
+    })
+    .catch(err => {
+      // handle error
+    });
+  });
 
   return (
     <div className="App">
@@ -50,9 +50,9 @@ function App() {
           <Route path="/addToCart" component={AddToCart}/>
           <Route path="/checkout" component={Checkout}/>
         </Switch>
-        <Link to="/">Home</Link>
-        <Link to="/addToCart">Add to Cart</Link>
-        <Link to="/checkout">Checkout</Link>
+        <Link to="/" className="App-link">Home</Link>
+        <Link to="/addToCart" className="App-link">Add to Cart</Link>
+        <Link to="/checkout" className="App-link">Checkout</Link>
       </header>
     </div>
   );

@@ -1,37 +1,51 @@
 import React, { useEffect, useState } from 'react';
 import PayPalButtons from './PayPalButtons';
 import './App.css';
-import { paypalScript } from './paypal';
+import { loadPaypalScript } from './paypal';
+// import { Messages } from '@paypal/messaging-components';
 
 function Checkout() {
-  const [isLoaded, setLoaded] = useState(window.paypal);
-  const paypalConfig = {
+  // console.log(Messages);
+  let config = {
     params: {
       'client-id': 'sb',
       'currency': 'USD',
       'commit': true,
+      'components': 'buttons'
     },
     attributes: {
       'data-csp-nonce': 'yo'
-    }
+    },
+    async: true
   };
 
+  const [scriptIsLoaded, setScriptIsLoaded] = useState(true);
+  const [paypalConfig, setPaypalConfig] = useState(config);
+  const [currency, setCurrency] = useState('USD');
+
   useEffect(() => {
-    if (!isLoaded) {
-      paypalScript(
+    if (!scriptIsLoaded) {
+      console.log('Loading PayPal script...', paypalConfig);
+      loadPaypalScript(
         paypalConfig
       )
       .then(paypal => {
         console.log('Loaded:', JSON.stringify(paypal));
-        setLoaded(true);
+        setScriptIsLoaded(true);
       })
       .catch(err => {
         console.error(`Error found: ${JSON.stringify(err)}`);
       });
     }
-  }, [isLoaded, paypalConfig]);
+  }, [scriptIsLoaded, paypalConfig]);
 
-  if (!isLoaded) return null;
+  const currencyChanged = () => {
+    const newCurrency = document.querySelector('#currency').value;
+
+    setCurrency(newCurrency);
+    setPaypalConfig(Object.assign(paypalConfig, { params: { ...paypalConfig.params, currency: newCurrency, components: 'buttons,messages' }}));
+    setScriptIsLoaded(false);
+  };
 
   const createOrder = (data, actions) => {
     return actions.order.create({
@@ -49,9 +63,14 @@ function Checkout() {
     return actions.order.capture();
   };
 
+  console.log(`script is loaded: ${scriptIsLoaded}`);
+  if (!scriptIsLoaded) return null;
   return (
       <>
         <h1>Checkout</h1>
+        <label htmlFor="currency">Currency:</label>
+        <input id="currency" name="currency" type="text" placeholder="Set currency" defaultValue={currency}/>
+        <button onClick={currencyChanged}>Update currency</button>
         <div className='paypal-buttons'>
           <PayPalButtons
             createOrder={(data, actions) =>  createOrder(data, actions)}

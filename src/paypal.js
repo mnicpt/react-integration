@@ -1,4 +1,4 @@
-export const paypalScript = function({ params, attributes }, cb) {
+export const loadPaypalScript = function({ params, attributes, async }, cb) {
   return new Promise((resolve, reject) => {
     let query = '';
     Object.keys(params).forEach(param => {
@@ -8,7 +8,12 @@ export const paypalScript = function({ params, attributes }, cb) {
     var script = document.createElement('script');
     script.src = `https://www.paypal.com/sdk/js?${query}`;
     script.type = 'text/javascript';
-    script.defer = true;
+
+    if (async) {
+      script.async = true;
+    } else {
+      script.defer = true;
+    }
     
     Object.keys(attributes).forEach(attr => {
       script.setAttribute(attr, attributes[attr]);
@@ -18,6 +23,6 @@ export const paypalScript = function({ params, attributes }, cb) {
       resolve(window.paypal);
     };
     script.onerror = reject;
-    document.head.appendChild(script);
+    document.head.insertBefore(script, document.head.firstChild);
   });
 }
