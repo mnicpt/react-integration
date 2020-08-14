@@ -4,32 +4,50 @@ import './App.css';
 import { Link, Route, Switch } from 'react-router-dom';
 import AddToCart from './AddToCart';
 import Checkout from './Checkout';
-import { loadPaypalScript } from './paypal';
+import { loadScript } from './paypal';
 
 function App() {
-  const paypalConfig = {
-    params: {
-      'client-id': 'sb',
-      'currency': 'USD',
-      'commit': true,
-    },
-    attributes: {
-      'data-csp-nonce': 'yo'
-    }
-  };
+  // const paypalConfig = {
+  //   params: {
+  //     'client-id': 'sb',
+  //     'currency': 'USD',
+  //     'commit': true,
+  //   },
+  //   attributes: {
+  //     'data-csp-nonce': 'yo',
+  //     'data-page-type': 'home'
+  //   },
+  //   async: true
+  // };
 
-  useEffect(() => {
-    loadPaypalScript(
-      paypalConfig
-    )
-    .then(paypal => {
-      // do stuff after load
-      console.log('Loaded', paypal);
-    })
-    .catch(err => {
-      // handle error
-    });
-  });
+  // useEffect(() => {
+  //   console.log('Load JS SDK async');
+  //   loadScript(
+  //     'https://www.paypal.com/sdk/js',
+  //     paypalConfig
+  //   )
+  //   .then(paypal => {
+  //     // do stuff after load
+  //     console.log('Loaded JS SDK async', paypal);
+  //   })
+  //   .catch(err => {
+  //     // handle error
+  //   });
+
+  //   const checkoutConfig = Object.assign(paypalConfig, { async: false });
+  //   console.log('Load three.js defer');
+  //   loadScript(
+  //     'https://unpkg.com/three@0.119.1/build/three.js',
+  //     checkoutConfig
+  //   )
+  //   .then(paypal => {
+  //     // do stuff after load
+  //     console.log('Loaded three.js defer', paypal);
+  //   })
+  //   .catch(err => {
+  //     // handle error
+  //   });
+  // });
 
   return (
     <div className="App">

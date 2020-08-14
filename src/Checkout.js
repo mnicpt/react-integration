@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PayPalButtons from './PayPalButtons';
 import './App.css';
-import { loadPaypalScript } from './paypal';
+import { loadScript } from './paypal';
 // import { Messages } from '@paypal/messaging-components';
 
 function Checkout() {
@@ -26,7 +26,7 @@ function Checkout() {
   useEffect(() => {
     if (!scriptIsLoaded) {
       console.log('Loading PayPal script...', paypalConfig);
-      loadPaypalScript(
+      loadScript(
         paypalConfig
       )
       .then(paypal => {

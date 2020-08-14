@@ -1,4 +1,5 @@
-export const loadPaypalScript = function({ params, attributes, async }, cb) {
+export const loadScript = function(url, { params, attributes, async }, cb) {
+  if (!url) throw new Error('url required to load script');
   return new Promise((resolve, reject) => {
     let query = '';
     Object.keys(params).forEach(param => {
@@ -6,10 +7,11 @@ export const loadPaypalScript = function({ params, attributes, async }, cb) {
     });
   
     var script = document.createElement('script');
-    script.src = `https://www.paypal.com/sdk/js?${query}`;
+    script.src = `${url}?${query}`;
+    // script.src = `https://www.paypalobjects.com/api/checkout.js?${query}`;
     script.type = 'text/javascript';
 
-    if (async) {
+    if (async === true) {
       script.async = true;
     } else {
       script.defer = true;
@@ -23,6 +25,6 @@ export const loadPaypalScript = function({ params, attributes, async }, cb) {
       resolve(window.paypal);
     };
     script.onerror = reject;
-    document.head.insertBefore(script, document.head.firstChild);
+    document.head.insertBefore(script, document.head.firstElementChild);
   });
 }
