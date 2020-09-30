@@ -1,53 +1,19 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { Link, Route, Switch } from 'react-router-dom';
 import AddToCart from './AddToCart';
+import AppSwitch from './AppSwitch';
 import Checkout from './Checkout';
-import { loadScript } from './paypal';
+import { loadScript } from './paypal.js';
 
 function App() {
-  // const paypalConfig = {
-  //   params: {
-  //     'client-id': 'sb',
-  //     'currency': 'USD',
-  //     'commit': true,
-  //   },
-  //   attributes: {
-  //     'data-csp-nonce': 'yo',
-  //     'data-page-type': 'home'
-  //   },
-  //   async: true
-  // };
-
-  // useEffect(() => {
-  //   console.log('Load JS SDK async');
-  //   loadScript(
-  //     'https://www.paypal.com/sdk/js',
-  //     paypalConfig
-  //   )
-  //   .then(paypal => {
-  //     // do stuff after load
-  //     console.log('Loaded JS SDK async', paypal);
-  //   })
-  //   .catch(err => {
-  //     // handle error
-  //   });
-
-  //   const checkoutConfig = Object.assign(paypalConfig, { async: false });
-  //   console.log('Load three.js defer');
-  //   loadScript(
-  //     'https://unpkg.com/three@0.119.1/build/three.js',
-  //     checkoutConfig
-  //   )
-  //   .then(paypal => {
-  //     // do stuff after load
-  //     console.log('Loaded three.js defer', paypal);
-  //   })
-  //   .catch(err => {
-  //     // handle error
-  //   });
-  // });
+  loadScript(' http://localhost.paypal.com:8000/sdk/js', {
+    params: {
+      'client-id': 'AYLa6UCw47Baut1LJ3TojVJBDe8ZkzAutZjWP7fVOCafaJ8em97GrHFW7EJXKcMjGcueM-R_AFa-cadq'
+    },
+    attributes: {}
+  });
 
   return (
     <div className="App">
@@ -67,6 +33,11 @@ function App() {
         <Switch>
           <Route path="/addToCart" component={AddToCart}/>
           <Route path="/checkout" component={Checkout}/>
+          <Route 
+            path="/appSwitch"
+            render={(props) => (
+              <AppSwitch {...props} latency={100} />
+            )} />
         </Switch>
         <Link to="/" className="App-link">Home</Link>
         <Link to="/addToCart" className="App-link">Add to Cart</Link>

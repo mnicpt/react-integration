@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 function PayPalButtons (props) {
   const [paypalIsLoaded, setPaypalIsLoaded] = useState(window.paypal && window.paypal.Buttons);
-
+  console.log(`props: ${JSON.stringify(props)}`);
   let start;
   let animationFrame = window.requestAnimationFrame(function loadScript(timestamp) {
     if (!start) {

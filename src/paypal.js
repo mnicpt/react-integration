@@ -25,6 +25,6 @@ export const loadScript = function(url, { params, attributes, async }, cb) {
       resolve(window.paypal);
     };
     script.onerror = reject;
-    document.head.insertBefore(script, document.head.firstElementChild);
+    document.head.insertBefore(script, document.head.firstChildElement);
   });
 }

@@ -30,10 +30,10 @@ html, body {
 }
 
 .App-link {
-  color: #61dafb;
+  color: #ccc;
 }
 .App-link:visited, .App-link:active {
-  color: #61dafb;
+  color: #ccc;
   text-decoration: none;
 }
 
@@ -48,5 +48,24 @@ html, body {
 }
 
 .paypal-buttons {
+  margin-top: 20px;
   width:50%;
+}
+
+.currencySection input {
+  margin-left: 5px;
+}
+
+.currencySection button {
+  margin-left: 8px;
+}
+
+.appSwitch {
+  color: cadetblue;
+  font-weight: bold;
+  margin: 40px;
+}
+
+.appSwitch:visited, .appSwitch:active {
+  color: cadetblue;
 }

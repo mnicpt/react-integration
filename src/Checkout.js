@@ -1,22 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import PayPalButtons from './PayPalButtons';
 import './App.css';
-import { loadScript } from './paypal';
-// import { Messages } from '@paypal/messaging-components';
+import { loadScript } from '@paypal/paypal-js';
 
 function Checkout() {
-  // console.log(Messages);
   let config = {
-    params: {
-      'client-id': 'sb',
-      'currency': 'USD',
-      'commit': true,
-      'components': 'buttons'
-    },
-    attributes: {
-      'data-csp-nonce': 'yo'
-    },
-    async: true
+    'client-id': 'sb',
   };
 
   const [scriptIsLoaded, setScriptIsLoaded] = useState(true);
@@ -43,11 +32,12 @@ function Checkout() {
     const newCurrency = document.querySelector('#currency').value;
 
     setCurrency(newCurrency);
-    setPaypalConfig(Object.assign(paypalConfig, { params: { ...paypalConfig.params, currency: newCurrency, components: 'buttons,messages' }}));
+    setPaypalConfig(Object.assign(paypalConfig, { currency: newCurrency }));
     setScriptIsLoaded(false);
   };
 
   const createOrder = (data, actions) => {
+    console.log('createOrder called');
     return actions.order.create({
       purchase_units: [
         {
@@ -68,11 +58,14 @@ function Checkout() {
   return (
       <>
         <h1>Checkout</h1>
-        <label htmlFor="currency">Currency:</label>
-        <input id="currency" name="currency" type="text" placeholder="Set currency" defaultValue={currency}/>
-        <button onClick={currencyChanged}>Update currency</button>
+        <section className='currencySection'>
+          <label htmlFor="currency">Currency:</label>
+          <input id="currency" name="currency" type="text" placeholder="Set currency" defaultValue={currency}/>
+          <button className='currency' onClick={currencyChanged}>Update currency</button>
+        </section>
         <div className='paypal-buttons'>
           <PayPalButtons
+            enableNativeCheckout={true}
             createOrder={(data, actions) =>  createOrder(data, actions)}
             onApprove={(data, actions) => onApprove(data, actions)}
           />
