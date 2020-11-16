@@ -5,7 +5,8 @@ import { loadScript } from '@paypal/paypal-js';
 
 function Checkout() {
   let config = {
-    'client-id': 'sb',
+    // 'client-id': 'AYLa6UCw47Baut1LJ3TojVJBDe8ZkzAutZjWP7fVOCafaJ8em97GrHFW7EJXKcMjGcueM-R_AFa-cadq' // localhost
+    'client-id': 'sb'
   };
 
   const [scriptIsLoaded, setScriptIsLoaded] = useState(true);
@@ -37,7 +38,7 @@ function Checkout() {
   };
 
   const createOrder = (data, actions) => {
-    console.log('createOrder called');
+    console.log('createOrder called', data, actions);
     return actions.order.create({
       purchase_units: [
         {
@@ -50,11 +51,19 @@ function Checkout() {
   };
 
   const onApprove = (data, actions) => {
-    return actions.order.capture();
+    actions.order.capture()
+      .then(details => {
+        return actions.redirect('https://www.google.com');
+      })
+      .catch(err => {
+        // throw new Error(err); 
+      }); 
   };
 
   console.log(`script is loaded: ${scriptIsLoaded}`);
+
   if (!scriptIsLoaded) return null;
+
   return (
       <>
         <h1>Checkout</h1>

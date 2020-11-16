@@ -25,10 +25,11 @@ const fetchAuthToken = async (latency) => {
         .then(response => response.json())
         .then(json => {
             console.log(`Data: ${JSON.stringify(json)}`);
-            const token = 'EC-6H409780PA3771339'; //json['access_token'];
+            const token = `EC-8281640976881894T`;//json['access_token'];
+            console.log(`token: ${token}`);
 
             setTimeout(() => {
-                // window.location.href = `http://localhost.paypal.com:8000/webapps/hermes?token=${token}`;
+                window.location.href = `http://localhost.paypal.com:8000/cgi-bin/webscr?cmd=_express-checkout&useraction=commit&token=${token}`;
             }, latency)
         })
         .catch(e => {
@@ -41,8 +42,8 @@ const fetchAuthToken = async (latency) => {
 function AppSwitch({ latency = 100 }) {
     useEffect(() => {
         console.log('redirecting');
-        fetchAuthToken();
-    }, []);
+        fetchAuthToken(latency);
+    }, [latency]);
 
     return <h1>App Switching...</h1>;
 }

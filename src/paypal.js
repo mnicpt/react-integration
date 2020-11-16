@@ -2,8 +2,12 @@ export const loadScript = function(url, { params, attributes, async }, cb) {
   if (!url) throw new Error('url required to load script');
   return new Promise((resolve, reject) => {
     let query = '';
-    Object.keys(params).forEach(param => {
-      query += `&${param}=${params[param]}`;
+    Object.keys(params).forEach((param, i) => {
+      if (i === 0) {
+        query += `${param}=${params[param]}`;
+      } else {
+        query += `&${param}=${params[param]}`;
+      }
     });
   
     var script = document.createElement('script');

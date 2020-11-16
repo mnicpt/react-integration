@@ -8,9 +8,10 @@ import Checkout from './Checkout';
 import { loadScript } from './paypal.js';
 
 function App() {
-  loadScript(' http://localhost.paypal.com:8000/sdk/js', {
+  loadScript('https://www.paypal.com/sdk/js', { // http://localhost.paypal.com:8000/sdk/js
     params: {
-      'client-id': 'AYLa6UCw47Baut1LJ3TojVJBDe8ZkzAutZjWP7fVOCafaJ8em97GrHFW7EJXKcMjGcueM-R_AFa-cadq'
+      // 'client-id': 'AYLa6UCw47Baut1LJ3TojVJBDe8ZkzAutZjWP7fVOCafaJ8em97GrHFW7EJXKcMjGcueM-R_AFa-cadq' //localhost
+      'client-id': 'sb' // sandbox
     },
     attributes: {}
   });
@@ -36,7 +37,7 @@ function App() {
           <Route 
             path="/appSwitch"
             render={(props) => (
-              <AppSwitch {...props} latency={100} />
+              <AppSwitch {...props} latency={500} />
             )} />
         </Switch>
         <Link to="/" className="App-link">Home</Link>
