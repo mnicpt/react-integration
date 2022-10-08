@@ -47,7 +47,7 @@
     "@babel/plugin-transform-flow-strip-types": "^7.10.4",
     "@babel/preset-flow": "^7.10.4",
     "flow-bin": "^0.130.0",
-    "grumbler-scripts": "^3.0.76",
+    "grumbler-scripts": "^4.0.4",
     "react-router-dom": "^5.2.0"
   }
 }
