@@ -5,8 +5,11 @@ import { loadScript } from '@paypal/paypal-js';
 
 function Checkout() {
   let config = {
-    // 'client-id': 'AYLa6UCw47Baut1LJ3TojVJBDe8ZkzAutZjWP7fVOCafaJ8em97GrHFW7EJXKcMjGcueM-R_AFa-cadq' // localhost
-    'client-id': 'sb'
+      'client-id': 'AYLa6UCw47Baut1LJ3TojVJBDe8ZkzAutZjWP7fVOCafaJ8em97GrHFW7EJXKcMjGcueM-R_AFa-cadq', // localhost
+      // 'client-id': 'sb'
+      // 'client-id': 'alc_client1',
+      // 'client-id': 'test',
+      debug: true
   };
 
   const [scriptIsLoaded, setScriptIsLoaded] = useState(true);
@@ -16,7 +19,7 @@ function Checkout() {
   useEffect(() => {
     if (!scriptIsLoaded) {
       console.log('Loading PayPal script...', paypalConfig);
-      loadScript(
+      loadScript('https://localhost.paypal.com:8443/sdk/js',
         paypalConfig
       )
       .then(paypal => {
@@ -60,6 +63,10 @@ function Checkout() {
       }); 
   };
 
+  const onCancel = (data, actions) => {
+    return actions.redirect();
+  };
+
   console.log(`script is loaded: ${scriptIsLoaded}`);
 
   if (!scriptIsLoaded) return null;
@@ -75,6 +82,7 @@ function Checkout() {
         <div className='paypal-buttons'>
           <PayPalButtons
             enableNativeCheckout={true}
+            onCancel={(data, actions) => onCancel(data, actions)}
             createOrder={(data, actions) =>  createOrder(data, actions)}
             onApprove={(data, actions) => onApprove(data, actions)}
           />

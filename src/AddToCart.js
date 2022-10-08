@@ -5,7 +5,7 @@ function AddToCart() {
   const handleClick = () => {
     setTimeout(() => {
       window.location = 'https://www.paypal.com/smart/checkout/native';
-    }, 999);
+    }, 900);
   }
 
   return (

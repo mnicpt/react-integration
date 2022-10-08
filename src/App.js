@@ -8,10 +8,12 @@ import Checkout from './Checkout';
 import { loadScript } from './paypal.js';
 
 function App() {
-  loadScript('https://www.paypal.com/sdk/js', { // http://localhost.paypal.com:8000/sdk/js
+  loadScript('https://www.msmaster.qa.paypal.com/sdk/js', { //  http://www.paypal.com/sdk/js
     params: {
-      // 'client-id': 'AYLa6UCw47Baut1LJ3TojVJBDe8ZkzAutZjWP7fVOCafaJ8em97GrHFW7EJXKcMjGcueM-R_AFa-cadq' //localhost
-      'client-id': 'sb' // sandbox
+      'client-id': 'B_AYe1WIDZqBgW6hiNL1ZYRt0W2DYsrE0uk-7WeapuzMUuwUylNf9EvHSTte9za847r4926dQ6RVVXB1RE', //localhost
+      // 'client-id': 'sb' // sandbox
+      // 'client-id': 'alc_client1',
+      debug: true
     },
     attributes: {}
   });

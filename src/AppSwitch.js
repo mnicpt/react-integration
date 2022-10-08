@@ -28,9 +28,8 @@ const fetchAuthToken = async (latency) => {
             const token = `EC-8281640976881894T`;//json['access_token'];
             console.log(`token: ${token}`);
 
-            setTimeout(() => {
-                window.location.href = `http://localhost.paypal.com:8000/cgi-bin/webscr?cmd=_express-checkout&useraction=commit&token=${token}`;
-            }, latency)
+            window.location.href = `http://localhost.paypal.com:8000/cgi-bin/webscr?cmd=_express-checkout&useraction=commit&token=${token}`;
+            // window.location.href = `https://www.paypal.com/smart/checkout/native?orderID=${token}&commit=1`;
         })
         .catch(e => {
             console.error(e);
