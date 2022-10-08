@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <style>
+         body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+            margin: 0;
+        }
+
+        .spinner {
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            z-index: 10;
+        }
+
+        .spinner .spinWrap {
+            width: 200px;
+            height: 100px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-left: -100px;
+            margin-top: -50px;
+        }
+
+        .spinner .loader,
+        .spinner .spinnerImage {
+            height: 100px;
+            width: 100px;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            opacity: 1;
+            filter: alpha(opacity=100);
+        }
+
+        .spinner .spinnerImage {
+            margin: 28px 0 0 -25px;
+            background: url(https://www.paypalobjects.com/images/checkout/hermes/icon_ot_spin_lock_skinny.png) no-repeat;
+        }
+
+        .spinner .loader {
+            margin: 0 0 0 -55px;
+            background-color: transparent;
+            animation: rotation .7s infinite linear;
+            border-left: 5px solid #cbcbca;
+            border-right: 5px solid #cbcbca;
+            border-bottom: 5px solid #cbcbca;
+            border-top: 5px solid #2380be;
+            border-radius: 100%;
+        }
+
+        @keyframes rotation {
+            from {
+                transform: rotate(0deg)
+            }
+            to {
+                transform: rotate(359deg)
+            }
+        }
+    </style>
+     <div class="preloader spinner">
+        <div class="spinWrap">
+            <p class="spinnerImage" />
+            <p class="loader" />
+        </div>
+    </div>
+    <script>
+        // const getSDKScript = () => {
+        //     if (__TEST__) {
+        //         const script = getScript({ host: getSDKHost(), path: getPath(), reverse: true });
+        //         if (!script) {
+        //             throw new Error(`Can not find SDK test script`);
+        //         }
+        //         return script;
+        //     }
+
+        //     try {
+        //         return getCurrentScript();
+        //     } catch (err) {
+        //         throw new Error(`PayPal Payments SDK script not found on page! Expected to find <script src="https://${ getSDKHost() }${  getPath() }">\n\n${ stringifyError(err) }`);
+        //     }
+        // };
+
+        // const getSDKAttributes = () => {
+        //     const sdkScript = getSDKScript();
+        //     const result = {};
+        //     for (const attr of sdkScript.attributes) {
+        //         if (attr.name.indexOf('data-') === 0) {
+        //             result[attr.name] = attr.value;
+        //         }
+        //     }
+        //     result[ATTRIBUTES.UID] = getCurrentScriptUID();
+        //     return result;
+        // };
+
+        // function getSDKQueryParams() {
+        //     const script = getSDKScript();
+        //     return parseQuery(script.src.split('?')[1] || '');
+        // }
+        // function getScriptUrl() {
+        //     const src = getSDKScript().getAttribute('src');
+        //     if (!src) {
+        //         throw new Error(`Can not find src for sdk script`);
+        //     }
+        //     return src;
+        // }
+        // function getSDKMeta() {
+        //     const url = getScriptUrl();
+
+        //     const scriptAttrs = getSDKAttributes();
+        //     const attrs = {};
+        //     for (const attr of Object.keys(scriptAttrs)) {
+        //         if (ALLOWED_ATTRS.indexOf(attr) !== -1) {
+        //             attrs[attr] = scriptAttrs[attr];
+        //         }
+        //     }
+            
+        //     return base64encode(JSON.stringify({ url, attrs })).replace(/\=+$/, ''); // eslint-disable-line no-useless-escape
+        // }
+
+        const fetchAuthToken = async (latency) => {
+            return new Promise(async (resolve, reject) => {
+                // get EC-Token
+                const clientID = 'B_AYe1WIDZqBgW6hiNL1ZYRt0W2DYsrE0uk-7WeapuzMUuwUylNf9EvHSTte9za847r4926dQ6RVVXB1RE';
+                const PAYPAL_OAUTH_API = 'https://msmaster.qa.paypal.com:12326/v1/oauth2/token/';
+
+                const basicAuth = btoa(clientID);
+                
+                await fetch(PAYPAL_OAUTH_API, {
+                    method: 'post',
+                    mode: 'cors',
+                    headers: {
+                        Accept:        `application/json`,
+                        Authorization: `Basic ${ basicAuth }`,
+                        'Content-Type': 'application/x-www-form-urlencoded' 
+                    },
+                    body: 'grant_type=client_credentials'
+                })
+                .then(response => response.json())
+                .then(json => {
+                    const token = json['access_token'];
+                    console.log(`token: ${token}`);
+                    
+                    window.location.href = `https://www.msmaster.qa.paypal.com/checkoutweb/inlinexo?token=${token}&locale.x=en_US&country.x=US&xcomponent=1&sdkMeta=eyJ1cmwiOiJodHRwczovL3d3dy50ZS1kY3IucWEucGF5cGFsLmNvbS9zZGsvanM%2FY2xpZW50LWlkPUJfQVllMVdJRFpxQmdXNmhpTkwxWllSdDBXMkRZc3JFMHVrLTdXZWFwdXpNVXV3VXlsTmY5RXZIU1R0ZTl6YTg0N3I0OTI2ZFE2UlZWWEIxUkUmbG9jYWxlPWVuX1VTJmNhY2hlYnVzdD1jYWx6b25lJmRlYnVnPXRydWUiLCJhdHRycyI6eyJkYXRhLXBhcnRuZXItYXR0cmlidXRpb24taWQiOiJCbHVlIFN1biBDb3JwIiwiZGF0YS11aWQiOiJ1aWRfY2Rsbm56cnVrY3Vjb3ltamRrZXBmY3Vyanl3enBhIn19`;
+                })
+                .catch(e => {
+                    console.error(e);
+                    reject(e);
+                });
+            });
+        };
+
+        fetchAuthToken();
+    </script>
+</body>
+</html>
