@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accelerated XO + WPS</title>
+</head>
+<body>
+    <style>
+         body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+            margin: 0;
+        }
+
+        .spinner {
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            z-index: 10;
+        }
+
+        .spinner .spinWrap {
+            width: 200px;
+            height: 100px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-left: -100px;
+            margin-top: -50px;
+        }
+
+        .spinner .loader,
+        .spinner .spinnerImage {
+            height: 100px;
+            width: 100px;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            opacity: 1;
+            filter: alpha(opacity=100);
+        }
+
+        .spinner .spinnerImage {
+            margin: 28px 0 0 -25px;
+            background: url(https://www.paypalobjects.com/images/checkout/hermes/icon_ot_spin_lock_skinny.png) no-repeat;
+        }
+
+        .spinner .loader {
+            margin: 0 0 0 -55px;
+            background-color: transparent;
+            animation: rotation .7s infinite linear;
+            border-left: 5px solid #cbcbca;
+            border-right: 5px solid #cbcbca;
+            border-bottom: 5px solid #cbcbca;
+            border-top: 5px solid #2380be;
+            border-radius: 100%;
+        }
+
+        @keyframes rotation {
+            from {
+                transform: rotate(0deg)
+            }
+            to {
+                transform: rotate(359deg)
+            }
+        }
+    </style>
+     <div class="preloader spinner">
+        <div class="spinWrap">
+            <p class="spinnerImage" />
+            <p class="loader" />
+        </div>
+    </div>
+    <script>
+        const SDK_SETTINGS = {
+            NAMESPACE:              'data-namespace',
+            CLIENT_TOKEN:           'data-client-token',
+            MERCHANT_ID:            'data-merchant-id',
+            PARTNER_ATTRIBUTION_ID: 'data-partner-attribution-id',
+            STAGE_HOST:             'data-stage-host',
+            API_STAGE_HOST:         'data-api-stage-host',
+            CSP_NONCE:              'data-csp-nonce',
+            ENABLE_3DS:             'data-enable-3ds',
+            SDK_INTEGRATION_SOURCE: 'data-sdk-integration-source',
+            USER_ID_TOKEN:          'data-user-id-token',
+            AMOUNT:                 'data-amount',
+            CLIENT_METADATA_ID:     'data-client-metadata-id',
+            PAGE_TYPE:              'data-page-type',
+            USER_EXPERIENCE_FLOW:   'data-user-experience-flow',
+            POPUPS_DISABLED:        'data-popups-disabled'
+        };
+        const ATTRIBUTES = {
+            UID: 'data-uid'
+        };
+        const ALLOWED_ATTRS = [
+            SDK_SETTINGS.AMOUNT,
+            SDK_SETTINGS.MERCHANT_ID,
+            SDK_SETTINGS.PARTNER_ATTRIBUTION_ID,
+            SDK_SETTINGS.POPUPS_DISABLED,
+            SDK_SETTINGS.ENABLE_3DS,
+            SDK_SETTINGS.SDK_INTEGRATION_SOURCE,
+            SDK_SETTINGS.CLIENT_METADATA_ID,
+            ATTRIBUTES.UID,
+            SDK_SETTINGS.CSP_NONCE
+        ];
+        function base64encode(str) {
+            if (typeof btoa === 'function') {
+                return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (m, p1) => {
+                    return String.fromCharCode(parseInt(p1, 16));
+                })).replace(/[=]/g, '');
+            }
+
+            if (typeof Buffer !== 'undefined') {
+                return Buffer.from(str, 'utf8').toString('base64').replace(/[=]/g, '');
+            }
+
+            throw new Error(`Can not find window.btoa or Buffer`);
+        }
+        function getScriptUrl() {
+            return 'https://www.msmaster.qa.paypal.com/sdk/js?client-id=B_AYe1WIDZqBgW6hiNL1ZYRt0W2DYsrE0uk-7WeapuzMUuwUylNf9EvHSTte9za847r4926dQ6RVVXB1RE&debug=true';
+        }
+        function getSDKAttributes() {
+            return {
+                'data-partner-attribution-id': 'Blue Sun Corp'
+            };
+        }
+        function getSDKMeta() {
+            const url = getScriptUrl();
+
+            const scriptAttrs = getSDKAttributes();
+            const attrs = {};
+            for (const attr of Object.keys(scriptAttrs)) {
+                if (ALLOWED_ATTRS.indexOf(attr) !== -1) {
+                    attrs[attr] = scriptAttrs[attr];
+                }
+            }
+            
+            return base64encode(JSON.stringify({ url, attrs })).replace(/\=+$/, ''); // eslint-disable-line no-useless-escape
+        }
+        const fetchAuthToken = async (latency) => {
+            return new Promise(async (resolve, reject) => {
+                // get EC-Token
+                const clientID = 'B_AYe1WIDZqBgW6hiNL1ZYRt0W2DYsrE0uk-7WeapuzMUuwUylNf9EvHSTte9za847r4926dQ6RVVXB1RE';
+                const PAYPAL_OAUTH_API = 'https://msmaster.qa.paypal.com:12326/v1/oauth2/token/'; //12714
+                const PAYPAL_ORDER_CREATION_API = 'https://msmaster.qa.paypal.com:12326/v2/checkout/orders';
+                const sdkMeta = getSDKMeta();
+                console.log(`sdkMeta: ${ sdkMeta }`);
+                const basicAuth = btoa(clientID);
+                console.log(`basic auth: ${ basicAuth }`);
+                await fetch(PAYPAL_OAUTH_API, {
+                    method: 'post',
+                    mode: 'cors',
+                    headers: {
+                        Accept:        `*/*`,
+                        'Accept-Encoding': 'gzip, deflate, br',
+                        Authorization: `Basic ${ basicAuth }`,
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        Connection: 'keep-alive'
+                    },
+                    body: 'grant_type=client_credentials&ignoreCache=true'
+                })
+                .then(response => response.json())
+                .then(json => {
+                    const token = json['access_token'];
+                    console.log(`access_token: ${token}`);
+
+                    fetch(PAYPAL_ORDER_CREATION_API, {
+                        method: 'post',
+                        mode: 'cors',
+                        headers: {
+                            Accept:        `application/json`,
+                            Authorization: `Bearer ${ token }`,
+                            'Content-Type': 'application/json',
+                            'paypal-partner-attribution-id': 'Blue Sun Corp',
+                            'prefer': 'return=representation'
+                        },
+                        body: JSON.stringify({
+                            application_context: {
+                                return_url: 'https://bluesuncorp.co.uk/icv4/thankyou.htm'
+                            },
+                            intent: 'CAPTURE',
+                            purchase_units: [{
+                                amount: {
+                                    currency_code: 'USD',
+                                    value: '0.02',
+                                    breakdown: {
+                                        item_total: {
+                                            currency_code: 'USD',
+                                            value: '0.02'
+                                        },
+                                        tax_total: {
+                                            currency_code: 'USD',
+                                            value: '0.00'
+                                        },
+                                        shipping: {
+                                            currency_code: 'USD',
+                                            value: '0.01'
+                                        },
+                                        handling: {
+                                            currency_code: 'USD',
+                                            value: '0.00'
+                                        },
+                                        insurance: {
+                                            currency_code: 'USD',
+                                            value: '0.00'
+                                        },
+                                        shipping_discount: {
+                                            currency_code: 'USD',
+                                            value: '0.00'
+                                        },
+                                        discount: {
+                                            currency_code: 'USD',
+                                            value: '0.01'
+                                        }
+                                    }
+                                },
+                                items: [
+                                    {
+                                        name: 'Socks',
+                                        description: 'Your favorite tube socks in a full range of colored stripes.',
+                                        unit_amount: {
+                                            currency_code: 'USD',
+                                            value: '0.01'
+                                        },
+                                        quantity: 1,
+                                        sku: '001'
+                                    },
+                                    {
+                                        name: 'Shoes',
+                                        description: 'Doc Martin patent black leather will go well with your socks.',
+                                        unit_amount: {
+                                            currency_code: 'USD',
+                                            value: '0.01'
+                                        },
+                                        quantity: 1,
+                                        sku: '007'
+                                    }
+                                ]
+                            }]
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(json => {
+                        const orderID = json.id;
+                        console.log(`orderID: ${ orderID }`);
+                        window.location.href = `https://www.msmaster.qa.paypal.com/checkoutnow?sessionID=&buttonSessionID=&stickinessID=&inlinexo=true&fundingSource=card&buyerCountry=US&local.x=en_US&commit=true&clientID=${ clientID }&env=stage&token=${ orderID }&locale.x=en_USxcomponent=1&sdkMeta=${ sdkMeta }`;
+                    })
+                    .catch(e => {
+                        console.error(e);
+                        reject(e);
+                    })
+                })
+                .catch(e => {
+                    console.error(e);
+                    reject(e);
+                });
+            });
+        };
+
+        fetchAuthToken();
+    </script>
+</body>
+</html>
