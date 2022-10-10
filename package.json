@@ -8,6 +8,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
+    "belter": "^1.0.190",
     "braintree-web-drop-in": "^1.25.0",
     "graphql-resolvers": "^0.4.2",
     "react": "^16.13.1",

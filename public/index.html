@@ -25,14 +25,14 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>React App</title>
-    <script src="https://www.msmaster.qa.paypal.com/sdk/js?client-id=B_AYe1WIDZqBgW6hiNL1ZYRt0W2DYsrE0uk-7WeapuzMUuwUylNf9EvHSTte9za847r4926dQ6RVVXB1RE&debug=true"></script>
+    <!-- <script src="https://www.msmaster.qa.paypal.com/sdk/js?client-id=B_AYe1WIDZqBgW6hiNL1ZYRt0W2DYsrE0uk-7WeapuzMUuwUylNf9EvHSTte9za847r4926dQ6RVVXB1RE&debug=true"></script> -->
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <style>
       #paypalButton {
-        height:45px;
+        height: 45px;
         width: 300px;
         margin: 40px auto;
         cursor: pointer;
@@ -50,29 +50,118 @@
         font-weight: 600;
         line-height: 2;
       }
-
     </style>
     <div id="paypalButton"></div>
+    <!-- WPS Snippet for AXO -->
     <script>
-      const paypalButton = document.querySelector('#paypalButton');
-      const button = document.createElement('div');
-      button.className = 'pp-button';
+      const paypalButton = document.querySelector("#paypalButton");
+      const button = document.createElement("div");
+      button.className = "pp-button";
 
-      const label = document.createElement('span');
-      label.className = 'pp-label';
-      label.innerText = 'Checkout';
+      const label = document.createElement("span");
+      label.className = "pp-label";
+      label.innerText = "Checkout";
 
       paypalButton.appendChild(button);
       button.appendChild(label);
 
-      document.querySelector('#paypalButton').addEventListener('click', () => {
-        const frame = document.createElement('iframe');
-        frame.src = "http://localhost:3000/accelerated.html";
-        frame.setAttribute('allowpaymentrequest', 'allowpaymentrequest');
-        frame.setAttribute('scrolling', 'no');
-        frame.style = 'position:absolute;background-color:white;border:none;width:100vw;height:100vh;top:0;';
+      document.querySelector("#paypalButton").addEventListener("click", () => {
+        if (!window.paypalPaymentRequest) {
+          throw new Error(
+            "Must provide a paymentRequest to initiate a PayPal Payment Session."
+          );
+        }
+        const queryParams = encodeURIComponent(
+          JSON.stringify(window.paypalPaymentRequest)
+        );
+
+        const url = `http://localhost:3000/accelerated.html?paypalPaymentRequest=${queryParams}`;
+        const frame = document.createElement("iframe");
+        frame.src = url;
+        frame.setAttribute("allowpaymentrequest", "allowpaymentrequest");
+        frame.setAttribute("scrolling", "no");
+        frame.style =
+          "position:absolute;background-color:white;border:none;width:100vw;height:100vh;top:0;";
         document.body.appendChild(frame);
       });
+    </script>
+    <!-- Merchant provided PayPal config -->
+    <script>
+      window.paypalPaymentRequest = {
+        clientID:
+          "B_AYe1WIDZqBgW6hiNL1ZYRt0W2DYsrE0uk-7WeapuzMUuwUylNf9EvHSTte9za847r4926dQ6RVVXB1RE",
+        commit: true,
+        order: {
+          application_context: {
+            cancel_url: "https://bluesuncorp.co.uk/icv4/inlinexo.htm",
+            return_url: "https://bluesuncorp.co.uk/icv4/thankyou.htm",
+          },
+          intent: "CAPTURE",
+          partnerAttributionId: 'Blue Sun Corp',
+          purchase_units: [
+            {
+              amount: {
+                currency_code: "USD",
+                value: "0.02",
+                breakdown: {
+                  item_total: {
+                    currency_code: "USD",
+                    value: "0.02",
+                  },
+                  tax_total: {
+                    currency_code: "USD",
+                    value: "0.00",
+                  },
+                  shipping: {
+                    currency_code: "USD",
+                    value: "0.01",
+                  },
+                  handling: {
+                    currency_code: "USD",
+                    value: "0.00",
+                  },
+                  insurance: {
+                    currency_code: "USD",
+                    value: "0.00",
+                  },
+                  shipping_discount: {
+                    currency_code: "USD",
+                    value: "0.00",
+                  },
+                  discount: {
+                    currency_code: "USD",
+                    value: "0.01",
+                  },
+                },
+              },
+              items: [
+                {
+                  name: "Socks",
+                  description:
+                    "Your favorite tube socks in a full range of colored stripes.",
+                  unit_amount: {
+                    currency_code: "USD",
+                    value: "0.01",
+                  },
+                  quantity: 1,
+                  sku: "001",
+                },
+                {
+                  name: "Shoes",
+                  description:
+                    "Doc Martin patent black leather will go well with your socks.",
+                  unit_amount: {
+                    currency_code: "USD",
+                    value: "0.01",
+                  },
+                  quantity: 1,
+                  sku: "007",
+                },
+              ],
+            },
+          ],
+        },
+      };
     </script>
   </body>
 </html>

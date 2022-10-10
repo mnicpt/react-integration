@@ -8,15 +8,15 @@ import Checkout from './Checkout';
 import { loadScript } from './paypal.js';
 
 function App() {
-  loadScript('https://www.msmaster.qa.paypal.com/sdk/js', { //  http://www.paypal.com/sdk/js
-    params: {
-      'client-id': 'B_AYe1WIDZqBgW6hiNL1ZYRt0W2DYsrE0uk-7WeapuzMUuwUylNf9EvHSTte9za847r4926dQ6RVVXB1RE', //localhost
-      // 'client-id': 'sb' // sandbox
-      // 'client-id': 'alc_client1',
-      debug: true
-    },
-    attributes: {}
-  });
+  // loadScript('https://www.msmaster.qa.paypal.com/sdk/js', { //  http://www.paypal.com/sdk/js
+  //   params: {
+  //     'client-id': 'B_AYe1WIDZqBgW6hiNL1ZYRt0W2DYsrE0uk-7WeapuzMUuwUylNf9EvHSTte9za847r4926dQ6RVVXB1RE', //localhost
+  //     // 'client-id': 'sb' // sandbox
+  //     // 'client-id': 'alc_client1',
+  //     debug: true
+  //   },
+  //   attributes: {}
+  // });
 
   return (
     <div className="App">
