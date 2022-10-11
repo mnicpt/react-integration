@@ -214,7 +214,8 @@
                 .then((json) => {
                   const orderID = json.id;
                   console.log(`orderID: ${orderID}`);
-                  window.location.href = `https://www.msmaster.qa.paypal.com/checkoutnow?sessionID=&buttonSessionID=&stickinessID=&inlinexo=true&fundingSource=card&buyerCountry=US&local.x=en_US&commit=true&clientID=${clientID}&env=stage&token=${orderID}&locale.x=en_USxcomponent=1&sdkMeta=${sdkMeta}`;
+                  window.document.location.href = `https://www.msmaster.qa.paypal.com/checkoutnow?sessionID=&buttonSessionID=&stickinessID=&inlinexo=true&fundingSource=card&buyerCountry=US&local.x=en_US&commit=true&clientID=${clientID}&env=stage&token=${orderID}&locale.x=en_USxcomponent=1&sdkMeta=${sdkMeta}`;
+                  console.log(`location: ${window.document.location.href}`);
                 })
                 .catch((e) => {
                   console.error(e);

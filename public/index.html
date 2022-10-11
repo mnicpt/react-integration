@@ -32,7 +32,7 @@
     <div id="root"></div>
     
     <!-- Specific PayPal button container to place button -->
-    <paypal-accelerated-button />
+    <paypal-accelerated-button label='Checkout Now' />
     <!-- WPS Snippet for AXO -->
     <script>
       const template = document.createElement('template');
@@ -65,16 +65,17 @@
         </div>
       `;
       class PPAcceleratedButton extends HTMLElement {
-        constructor(name) {
+        constructor() {
           super();
-          this.name = 'Checkout' || name;
+
+          this.label = this.getAttribute('label') || 'Checkout';
+
           this.attachShadow({ mode: 'open' });
+          this.shadowRoot.appendChild(template.content.cloneNode(true));
+          this.shadowRoot.querySelector('.pp-label').innerText = this.label;
         }
 
         connectedCallback() {
-          this.shadowRoot.appendChild(template.content.cloneNode(true));
-          this.shadowRoot.querySelector('.pp-label').innerText = this.name;
-
           this.shadowRoot.querySelector("#paypalButton").addEventListener("click", () => {
             if (!window.paypalPaymentRequest) {
               throw new Error(
