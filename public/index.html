@@ -30,61 +30,80 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    <style>
-      #paypalButton {
-        height: 45px;
-        width: 300px;
-        margin: 40px auto;
-        cursor: pointer;
-      }
-      .pp-button {
-        background: black;
-        border-radius: 8px;
-        color: white;
-        height: 100%;
-        text-align: center;
-        width: 100%;
-      }
-      .pp-label {
-        font-size: 1.2rem;
-        font-weight: 600;
-        line-height: 2;
-      }
-    </style>
-    <div id="paypalButton"></div>
+    
+    <!-- Specific PayPal button container to place button -->
+    <paypal-accelerated-button />
     <!-- WPS Snippet for AXO -->
     <script>
-      const paypalButton = document.querySelector("#paypalButton");
-      const button = document.createElement("div");
-      button.className = "pp-button";
-
-      const label = document.createElement("span");
-      label.className = "pp-label";
-      label.innerText = "Checkout";
-
-      paypalButton.appendChild(button);
-      button.appendChild(label);
-
-      document.querySelector("#paypalButton").addEventListener("click", () => {
-        if (!window.paypalPaymentRequest) {
-          throw new Error(
-            "Must provide a paymentRequest to initiate a PayPal Payment Session."
-          );
+      const template = document.createElement('template');
+      template.innerHTML = `
+        <style>
+          #paypalButton {
+            height: 45px;
+            width: 300px;
+            margin: 40px auto;
+            cursor: pointer;
+          }
+          .pp-button {
+            background: black;
+            border-radius: 8px;
+            color: white;
+            height: 100%;
+            text-align: center;
+            width: 100%;
+          }
+          .pp-label {
+            font-size: 1.2rem;
+            font-weight: 600;
+            line-height: 2;
+          }
+        </style>
+        <div id='paypalButton' class='pp-button'>
+          <span class='pp-label'>
+            Checkout
+          </span>
+        </div>
+      `;
+      class PPAcceleratedButton extends HTMLElement {
+        constructor(name) {
+          super();
+          this.name = 'Checkout' || name;
+          this.attachShadow({ mode: 'open' });
         }
-        const queryParams = encodeURIComponent(
-          JSON.stringify(window.paypalPaymentRequest)
-        );
 
-        const url = `http://localhost:3000/accelerated.html?paypalPaymentRequest=${queryParams}`;
-        const frame = document.createElement("iframe");
-        frame.src = url;
-        frame.setAttribute("allowpaymentrequest", "allowpaymentrequest");
-        frame.setAttribute("scrolling", "no");
-        frame.style =
-          "position:absolute;background-color:white;border:none;width:100vw;height:100vh;top:0;";
-        document.body.appendChild(frame);
-      });
+        connectedCallback() {
+          this.shadowRoot.appendChild(template.content.cloneNode(true));
+          this.shadowRoot.querySelector('.pp-label').innerText = this.name;
+
+          this.shadowRoot.querySelector("#paypalButton").addEventListener("click", () => {
+            if (!window.paypalPaymentRequest) {
+              throw new Error(
+                "Must provide a paymentRequest to initiate a PayPal Payment Session."
+              );
+            }
+            const queryParams = encodeURIComponent(
+              JSON.stringify(window.paypalPaymentRequest)
+            );
+
+            const url = `http://localhost.paypal.com:3000/accelerated.html?paypalPaymentRequest=${queryParams}`;
+            const frame = document.createElement("iframe");
+            frame.src = url;
+            frame.setAttribute("allowpaymentrequest", "allowpaymentrequest");
+            frame.setAttribute("scrolling", "no");
+            frame.style =
+              "position:absolute;background-color:white;border:none;width:100vw;height:100vh;top:0;";
+            document.body.appendChild(frame);
+          });
+        }
+
+        disconnectedCallback() {
+          this.shadowRoot.querySelector('#paypalButton').removeEventListener();
+        }
+
+      }
+      window.customElements.define('paypal-accelerated-button', PPAcceleratedButton);
     </script>
+
     <!-- Merchant provided PayPal config -->
     <script>
       window.paypalPaymentRequest = {
